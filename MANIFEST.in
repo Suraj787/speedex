@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include speedex *.css
+recursive-include speedex *.csv
+recursive-include speedex *.html
+recursive-include speedex *.ico
+recursive-include speedex *.js
+recursive-include speedex *.json
+recursive-include speedex *.md
+recursive-include speedex *.png
+recursive-include speedex *.py
+recursive-include speedex *.svg
+recursive-include speedex *.txt
+recursive-exclude speedex *.pyc
