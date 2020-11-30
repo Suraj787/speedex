@@ -1,0 +1,54 @@
+{
+ "actions": [],
+ "creation": "2020-11-28 21:09:00.085528",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "client_id",
+  "ref_no",
+  "sea_id"
+ ],
+ "fields": [
+  {
+   "fieldname": "client_id",
+   "fieldtype": "Data",
+   "label": "CLIENT ID"
+  },
+  {
+   "fieldname": "ref_no",
+   "fieldtype": "Data",
+   "label": "REF NO"
+  },
+  {
+   "fieldname": "sea_id",
+   "fieldtype": "Data",
+   "label": "SEA ID"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2020-11-28 21:09:00.085528",
+ "modified_by": "Administrator",
+ "module": "Speedex",
+ "name": "Speedex Entry",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
