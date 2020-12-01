@@ -3,6 +3,7 @@ import requests
 import frappe
 import json
 
+# bench execute speedex.dump_data.data_entry
 def data_entry():
     ref_list = []
     r = requests.get('https://speedexlogistics.com/s/api/accounts/sea/cheque_payment/list.php',
@@ -34,7 +35,7 @@ def data_entry():
             pi_doc.submit()
     return 'OK'
 
-
+# bench execute speedex.dump_data.payment_entry
 def payment_entry():
     ref_list = []
     r = requests.get('https://speedexlogistics.com/s/api/accounts/sea/cheque_payment/cheque_payment_entries.php',
