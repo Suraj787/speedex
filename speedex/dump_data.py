@@ -17,20 +17,26 @@ def data_entry():
             pi_doc = frappe.get_doc({
                 "doctype" : "Purchase Invoice",
                 "company" : "Speedex Logistics Limited",
-                "supplier" : "Goverment",
+                "supplier" : "Government- (DUTIES)",
                 "client_id" : item.get('client_id'),
                 "ref_no" : item.get('ref_no'),
                 "sea_id" : item.get('sea_id'),
-
             })
             for i in item.get('items'):
                 for my_item in i.keys():
-                    pi_doc.append("items",{
+                    q = "select expense_account from `tabItem Default` where parent ='{0}';".format(my_item)
+                    expense_acc = frappe.db.sql(q)
+                    if expense_acc:
+                        pi_doc.append("items",{
                         "item_name": my_item,
                         "qty" : 1,
-                        "expense_account" : "Stock Received But Not Billed - E",
+                        "expense_account" : expense_acc[0][0],
                         "uom" : "Nos",
-                    })
-            pi_doc.insert()
-            pi_doc.submit()
+                        })
+            print(pi_doc)
+            try:
+                pi_doc.insert()
+                pi_doc.submit()
+            except Exception as e:
+                print(e)
     return 'OK'
