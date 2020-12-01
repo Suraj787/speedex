@@ -16,7 +16,7 @@ def data_entry():
         if item.get('sea_id') not in sea_list:
             pi_doc = frappe.get_doc({
                 "doctype" : "Purchase Invoice",
-                "company" : "erpnext",
+                "company" : "Speedex Logistics Limited",
                 "supplier" : "Goverment",
                 "client_id" : item.get('client_id'),
                 "ref_no" : item.get('ref_no'),
