@@ -3,23 +3,22 @@ import requests
 import frappe
 import json
 
-@frappe.whitelist()
 def data_entry():
-    sea_list = []
+    ref_list = []
     r = requests.get('https://speedexlogistics.com/s/api/accounts/sea/cheque_payment/list.php',
     headers={'sessionID': '1'}) 
     item_list = json.loads(r.content)
-    all_pi = frappe.get_all("Purchase Invoice", ["sea_id"])
+    all_pi = frappe.get_all("Purchase Invoice", ["ref_no"])
     for pi in all_pi:
-        sea_list.append(pi.get('sea_id'))
+        ref_list.append(pi.get('ref_no')) 
     for item in item_list:
-        if item.get('sea_id') not in sea_list:
+        if item.get('ref') not in ref_list:
             pi_doc = frappe.get_doc({
                 "doctype" : "Purchase Invoice",
                 "company" : "Speedex Logistics Limited",
-                "supplier" : "Goverment",
+                "supplier" : "Government",
                 "client_id" : item.get('client_id'),
-                "ref_no" : item.get('ref_no'),
+                "ref_no" : item.get('ref'),
                 "sea_id" : item.get('sea_id'),
 
             })
@@ -28,9 +27,47 @@ def data_entry():
                     pi_doc.append("items",{
                         "item_name": my_item,
                         "qty" : 1,
-                        "expense_account" : "Stock Received But Not Billed - E",
+                        "expense_account" :"Administrative Expenses - SLL" ,
                         "uom" : "Nos",
                     })
             pi_doc.insert()
             pi_doc.submit()
+    return 'OK'
+
+
+def payment_entry():
+    ref_list = []
+    r = requests.get('https://speedexlogistics.com/s/api/accounts/sea/cheque_payment/cheque_payment_entries.php',
+    headers={'sessionID': '1'}) 
+    item_list = json.loads(r.content)
+    all_pi = frappe.get_all("Payment Entry", ["ref_no"])
+    import datetime
+    for pi in all_pi:
+        ref_list.append(pi.get('ref')) 
+    for item in item_list:
+        if item.get('ref') not in ref_list:
+            datetime_obj = datetime.datetime.strptime(item.get('date_opened'), '%d/%m/%Y')
+            for d in frappe.get_all('Purchase Invoice',{'ref_no':item.get('ref')},['name','supplier','due_date']):
+                pe_doc = frappe.get_doc({
+                    "doctype" : "Payment Entry",
+                    "payment_type":"Pay",
+                    "posting_date":datetime_obj.date(),
+                    "mode_of_payment":"Cash",
+                    "party_type":"Supplier",
+                    "ref_no" : item.get('ref'),
+                    "party":d.get('supplier'),
+                    "paid_amount":item.get('Total_Amount'),
+                    "paid_from":"I&M - SLL",
+                    "received_amount":float(item.get('Total_Amount')),
+                    "reference_no":item.get('cheque_no'),
+                    "reference_date":datetime_obj.date()
+                })
+                pe_doc.append("references",{
+                    "reference_doctype": 'Purchase Invoice',
+                    "reference_name":d.name,
+                    "due_date":d.due_date,
+                    "total_amount":item.get('Total_Amount')
+                })
+                pe_doc.insert()
+                pe_doc.submit()
     return 'OK'
