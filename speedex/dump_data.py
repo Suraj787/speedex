@@ -5,15 +5,15 @@ import json
 
 @frappe.whitelist()
 def data_entry():
-    sea_list = []
+    ref_list = []
     r = requests.get('https://speedexlogistics.com/s/api/accounts/sea/cheque_payment/list.php',
     headers={'sessionID': '1'}) 
     item_list = json.loads(r.content)
     all_pi = frappe.get_all("Purchase Invoice", ["sea_id"])
     for pi in all_pi:
-        sea_list.append(pi.get('sea_id'))
+        ref_list.append(pi.get('ref_no'))
     for item in item_list:
-        if item.get('sea_id') not in sea_list:
+        if item.get('ref_no') not in ref_list:
             pi_doc = frappe.get_doc({
                 "doctype" : "Purchase Invoice",
                 "company" : "Speedex Logistics Limited",
