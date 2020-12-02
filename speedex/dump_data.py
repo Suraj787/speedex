@@ -32,7 +32,8 @@ def data_entry():
                     q = "select expense_account from `tabItem Default` where parent ='{0}';".format(my_item)
                     expense_acc = frappe.db.sql(q)
                     pi_doc.append("items",{
-                        "item_name": my_item,
+                        "item_code": my_item,
+                        "item_name": frappe.db.get_value('Item',my_item,'item_name'),
                         "qty" : 1,
                         "expense_account" :expense_acc[0][0] if expense_acc and expense_acc[0][0] else "Administrative Expenses - SLL" ,
                         "uom" : "Nos",
