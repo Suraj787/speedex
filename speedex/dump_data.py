@@ -78,7 +78,8 @@ def payment_entry():
                     "reference_doctype": 'Purchase Invoice',
                     "reference_name":d.name,
                     "due_date":d.due_date,
-                    "total_amount":item.get('Total_Amount')
+                    "total_amount":item.get('Total_Amount'),
+                    "allocated_amount":item.get('Total_Amount')
                 })
                 pe_doc.insert()
                 pe_doc.submit()
