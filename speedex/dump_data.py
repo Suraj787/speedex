@@ -11,7 +11,7 @@ def data_entry():
 #     print(r.content)
 #     print(type(r.content))
     op=r.content
-    if type(r.content)=byte:
+    if type(r.content)==byte:
        op=(r.content).decode("utf-8")
     item_list = json.loads(op)
     print(item_list)
