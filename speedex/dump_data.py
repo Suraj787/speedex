@@ -36,6 +36,7 @@ def data_entry():
                         "qty" : 1,
                         "expense_account" :expense_acc[0][0] if expense_acc and expense_acc[0][0] else "Administrative Expenses - SLL" ,
                         "uom" : "Nos",
+                        "rate":i[my_item]
                     })
             pi_doc.insert()
             pi_doc.submit()
@@ -82,3 +83,29 @@ def payment_entry():
                 pe_doc.insert()
                 pe_doc.submit()
     return 'OK'
+
+
+
+# delete all purchase invoices
+
+# bench execute speedex.dump_data.delete_purchase_invoices
+def delete_purchase_invoices():
+    for d in frappe.get_all('Purchase Invoice',['name','docstatus']):
+        doc=frappe.get_doc('Purchase Invoice',d.name)
+        print(doc.name)
+        if d.docstatus==1:
+            doc.cancel()
+        frappe.delete_doc("Purchase Invoice",doc.name)
+
+
+
+# delete all payment entries
+
+# bench execute speedex.dump_data.delete_payment_entry
+def delete_payment_entry():
+    for d in frappe.get_all('Payment Entry',['name','docstatus']):
+        doc=frappe.get_doc('Payment Entry',d.name)
+        print(doc.name)
+        if d.docstatus==1:
+            doc.cancel()
+        frappe.delete_doc("Payment Entry",doc.name)
