@@ -8,9 +8,13 @@ def data_entry():
     ref_list = []
     r = requests.get('https://speedexlogistics.com/s/api/accounts/sea/cheque_payment/list.php',
     headers={'sessionID': '1'}) 
-    print(r.content)
-    print(type(r.content))
-#     item_list = json.loads(r.content)
+#     print(r.content)
+#     print(type(r.content))
+    op=r.content
+    if type(r.content)=byte:
+       op=(r.content).decode("utf-8")
+    item_list = json.loads(op)
+    print(item_list)
 #     all_pi = frappe.get_all("Purchase Invoice", ["ref_no"])
 #     for pi in all_pi:
 #         ref_list.append(pi.get('ref_no')) 
