@@ -41,6 +41,23 @@ def data_entry():
                     })
             pi_doc.insert()
             pi_doc.submit()
+            for d in frappe.get_all('GL Entry',{'voucher_type':'Purchase Invoice','account':('!=','Creditors - SLL'),'voucher_no':pi_doc.name},['name','docstatus']):
+                doc=frappe.get_doc('GL Entry',d.name)
+                if d.docstatus==1:
+                    doc.cancel()
+                frappe.delete_doc("GL Entry",doc.name)
+            for d in pi_doc.get('items'):
+                account=frappe.db.get_value('Item',d.item_code,'gl_entry__account_of_api')
+                if account:
+                    gl=frappe.new_doc("GL Entry")
+                    gl.posting_date=pi_doc.posting_date
+                    gl.voucher_type="Purchase Invoice"
+                    gl.voucher_no=pi_doc.name
+                    gl.account=account
+                    gl.debit=d.amount
+                    gl.debit_in_account_currency=d.amount
+                    gl.insert()
+                    gl.submit()
     return 'OK'
 
 # bench execute speedex.dump_data.payment_entry
@@ -84,9 +101,17 @@ def payment_entry():
                 })
                 pe_doc.insert()
                 pe_doc.submit()
+            break
     return 'OK'
 
 
+# set gl_entry__account_of_api value
+
+# bench execute speedex.dump_data.set_account_to_item_master_document
+def set_account_to_item_master_document():
+    for d in frappe.get_all('Item',['name','gl_entry__account_of_api']):
+        if not d.gl_entry__account_of_api:
+            frappe.db.set_value('Item',d.name,'gl_entry__account_of_api','8001 - CUSTOMS DUTY - SLL')
 
 # delete all purchase invoices
 
@@ -111,3 +136,14 @@ def delete_payment_entry():
         if d.docstatus==1:
             doc.cancel()
         frappe.delete_doc("Payment Entry",doc.name)
+
+# delete all pi gl entries
+
+# bench execute speedex.dump_data.delete_pi_gl_entries
+def delete_pi_gl_entries():
+    for d in frappe.get_all('GL Entry',{'voucher_type':'Purchase Invoice','account':('!=','Creditors - SLL')},['name','docstatus']):
+        print(d.name)
+        doc=frappe.get_doc('GL Entry',d.name)
+        if d.docstatus==1:
+            doc.cancel()
+        frappe.delete_doc("GL Entry",doc.name)
