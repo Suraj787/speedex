@@ -101,7 +101,6 @@ def payment_entry():
                 })
                 pe_doc.insert()
                 pe_doc.submit()
-            break
     return 'OK'
 
 
