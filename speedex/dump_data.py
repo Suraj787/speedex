@@ -64,7 +64,7 @@ def payment_entry():
                     "doctype" : "Payment Entry",
                     "payment_type":"Pay",
                     "posting_date":datetime_obj.date(),
-                    "mode_of_payment":"Cash",
+                    "mode_of_payment":"Cheque",
                     "party_type":"Supplier",
                     "ref_no" : item.get('ref'),
                     "party":d.get('supplier'),
