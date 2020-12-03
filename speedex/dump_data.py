@@ -16,11 +16,12 @@ def data_entry():
     for pi in all_pi:
         ref_list.append(pi.get('ref_no')) 
     for item in item_list:
-        if item.get('ref') not in ref_list:
+        if item.get('ref') not in ref_list :
             ref_list.append(item.get('ref'))
             pi_doc = frappe.get_doc({
                 "doctype" : "Purchase Invoice",
                 "company" : "Speedex Logistics Limited",
+                "naming_series":"DN-.####",
                 "supplier" : "Government",
                 "client_id" : item.get('client_id'),
                 "ref_no" : item.get('ref'),
@@ -31,6 +32,10 @@ def data_entry():
                 for my_item in i.keys():
                     q = "select expense_account from `tabItem Default` where parent ='{0}';".format(my_item)
                     expense_acc = frappe.db.sql(q)
+                    for ip in frappe.get_all('Item Price',{'item_code':my_item,'buying':1}):
+                        item_price=frappe.get_doc('Item Price',ip.name)
+                        item_price.price_list_rate=i[my_item]
+                        item_price.save()
                     pi_doc.append("items",{
                         "item_code": my_item,
                         "item_name": frappe.db.get_value('Item',my_item,'item_name'),
@@ -39,6 +44,7 @@ def data_entry():
                         "uom" : "Nos",
                         "rate":i[my_item]
                     })
+                       
             pi_doc.insert()
             pi_doc.submit()
             for d in frappe.get_all('GL Entry',{'voucher_type':'Purchase Invoice','account':('!=','Creditors - SLL'),'voucher_no':pi_doc.name},['name','docstatus']):
@@ -48,7 +54,7 @@ def data_entry():
                 frappe.delete_doc("GL Entry",doc.name)
             for d in pi_doc.get('items'):
                 account=frappe.db.get_value('Item',d.item_code,'gl_entry__account_of_api')
-                if account:
+                if account and d.amount>0:
                     gl=frappe.new_doc("GL Entry")
                     gl.posting_date=pi_doc.posting_date
                     gl.voucher_type="Purchase Invoice"
