@@ -75,13 +75,13 @@ def payment_entry():
     if type(r.content)==bytes:
        op=(r.content).decode("utf-8")
     item_list = json.loads(op)
-    all_pi = frappe.get_all("Payment Entry", ["ref_no"])
+    all_pe = frappe.get_all("Payment Entry", ["reference_no"])
     import datetime
-    for pi in all_pi:
-        ref_list.append(pi.get('ref')) 
+    for pe in all_pe:
+        ref_list.append(pe.get('reference_no')) 
     for item in item_list:
-        if item.get('ref') not in ref_list:
-            ref_list.append(item.get('ref'))
+        if item.get('cheque_no') not in ref_list:
+            ref_list.append(item.get('cheque_no'))
             datetime_obj = datetime.datetime.strptime(item.get('date_opened'), '%d/%m/%Y')
             for d in frappe.get_all('Purchase Invoice',{'ref_no':item.get('ref')},['name','supplier','due_date']):
                 pe_doc = frappe.get_doc({
