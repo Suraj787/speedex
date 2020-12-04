@@ -16,12 +16,16 @@ def data_entry():
     for pi in all_pi:
         ref_list.append(pi.get('ref_no')) 
     for item in item_list:
+        customer=''
+        for cu in frappe.get_all('Customer',{'client_id':item.get('client_id')}):
+            customer=cu.name
         if item.get('ref') not in ref_list :
             ref_list.append(item.get('ref'))
             pi_doc = frappe.get_doc({
                 "doctype" : "Purchase Invoice",
                 "company" : "Speedex Logistics Limited",
                 "naming_series":"DN-.####",
+                "customer":customer,
                 "supplier" : "Government",
                 "client_id" : item.get('client_id'),
                 "ref_no" : item.get('ref'),
