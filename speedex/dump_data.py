@@ -13,9 +13,11 @@ def data_entry():
        op=(r.content).decode("utf-8")
     item_list = json.loads(op)
     all_pi = frappe.get_all("Purchase Invoice", ["ref_no"])
+    import datetime
     for pi in all_pi:
         ref_list.append(pi.get('ref_no')) 
     for item in item_list:
+        datetime_obj = datetime.datetime.strptime(item.get('payment_date'), '%d/%m/%Y')
         customer=''
         for cu in frappe.get_all('Customer',{'client_id':item.get('client_id')}):
             customer=cu.name
@@ -25,6 +27,7 @@ def data_entry():
                 "doctype" : "Purchase Invoice",
                 "company" : "Speedex Logistics Limited",
                 "naming_series":"DN-.####",
+                "posting_date":datetime_obj.date(),
                 "customer":customer,
                 "supplier" : "Government",
                 "client_id" : item.get('client_id'),
@@ -48,9 +51,11 @@ def data_entry():
                         "uom" : "Nos",
                         "rate":i[my_item]
                     })
-                       
-            pi_doc.insert()
+                  
+            pi_doc.insert()     
             pi_doc.submit()
+            frappe.db.set_value('Purchase Invoice',pi_doc.name,'posting_date',datetime_obj.date())
+            frappe.db.set_value('Purchase Invoice',pi_doc.name,'due_date',datetime_obj.date())
             for d in frappe.get_all('GL Entry',{'voucher_type':'Purchase Invoice','account':('!=','Creditors - SLL'),'voucher_no':pi_doc.name},['name','docstatus']):
                 doc=frappe.get_doc('GL Entry',d.name)
                 if d.docstatus==1:
