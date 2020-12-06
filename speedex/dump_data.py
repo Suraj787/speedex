@@ -28,7 +28,7 @@ def data_entry():
                 "company" : "Speedex Logistics Limited",
                 "naming_series":"DN-.####",
                 "posting_date":datetime_obj.date(),
-                "customer":customer,
+                "customer_name":customer,
                 "supplier" : "Government",
                 "client_id" : item.get('client_id'),
                 "ref_no" : item.get('ref'),
