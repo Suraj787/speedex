@@ -91,6 +91,7 @@ def payment_entry():
     for item in item_list:
         if item.get('cheque_no') not in ref_list:
             ref_list.append(item.get('cheque_no'))
+            print(item.get('ref'))
             datetime_obj = datetime.datetime.strptime(item.get('date_opened'), '%d/%m/%Y')
             for d in frappe.get_all('Purchase Invoice',{'ref_no':item.get('ref')},['name','supplier','due_date']):
                 pe_doc = frappe.get_doc({
