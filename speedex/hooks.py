@@ -102,23 +102,12 @@ doctype_list_js = {"Purchase Invoice" : "public/js/purchase_invoice_list.js"}
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"speedex.tasks.all"
-# 	],
-# 	"daily": [
-# 		"speedex.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"speedex.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"speedex.tasks.weekly"
-# 	]
-# 	"monthly": [
-# 		"speedex.tasks.monthly"
-# 	]
-# }
+scheduler_events = {
+	"hourly": [
+		"speedex.dump_data.data_entry",
+        "speedex.dump_data.payment_entry"
+	],
+}
 
 # Testing
 # -------
