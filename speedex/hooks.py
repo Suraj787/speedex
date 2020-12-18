@@ -91,13 +91,11 @@ doctype_list_js = {"Purchase Invoice" : "public/js/purchase_invoice_list.js"}
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	"Sales Invoice": {
+		"validate": "speedex.speedex.doctype.sales_invoice.validate"
+	}
+}
 
 # Scheduled Tasks
 # ---------------
