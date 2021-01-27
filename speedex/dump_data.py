@@ -73,6 +73,7 @@ def data_entry():
                     gl.debit_in_account_currency=d.amount
                     gl.insert()
                     gl.submit()
+        frappe.db.commit()
     return 'OK'
 
 # bench execute speedex.dump_data.payment_entry
@@ -116,6 +117,7 @@ def payment_entry():
                 })
                 pe_doc.insert()
                 pe_doc.submit()
+        frappe.db.commit()
     return 'OK'
 
 
