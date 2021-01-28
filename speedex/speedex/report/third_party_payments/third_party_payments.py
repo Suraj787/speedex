@@ -20,16 +20,16 @@ def execute(filters=None):
 
 def get_columns():
     return [
-    _("SERIES") + ":Data:150",
-    _("SUPPLIER NAME") + ":Data:250",
-    _("CUSTOMER") + ":Data:250",
+    _("SERIES") + ":Link/Purchase Invoice:150",
+    _("SUPPLIER NAME") + ":Link/Supplier:250",
+    _("CUSTOMER") + ":Link/Customer:250",
     _("REF NO") + ":Data:100",
     _("GRAND TOTAL") + ":Currency:150",
     _("DATE") + ":Date:150"
     ]
 
 def get_salary_slip_entries(filters):
-    return frappe.db.sql("""SELECT `tabPurchase Invoice`.name, `tabPurchase Invoice`.supplier, `tabPurchase Invoice`.customer, `tabPurchase Invoice`.ref_no, `tabPurchase Invoice`.grand_total,`tabPurchase Invoice`.posting_date
+    return frappe.db.sql("""SELECT `tabPurchase Invoice`.name, `tabPurchase Invoice`.supplier, `tabPurchase Invoice`.customer_name, `tabPurchase Invoice`.ref_no, `tabPurchase Invoice`.grand_total,`tabPurchase Invoice`.posting_date
         FROM `tabPurchase Invoice`
         {salary_slip_conditions} 
         ORDER BY `tabPurchase Invoice`.posting_date desc, `tabPurchase Invoice`.name desc"""\
@@ -41,7 +41,7 @@ def get_salary_slip_conditions(filters):
         if filters.get("company"):
             conditions.append("`tabPurchase Invoice`.company=%(company)s")
         if filters.get("customer"):
-            conditions.append("`tabPurchase Invoice`.customer = %(customer)s")
+            conditions.append("`tabPurchase Invoice`.customer_name = %(customer)s")
         if filters.get("from_date"):
             conditions.append("`tabPurchase Invoice`.posting_date >= %(from_date)s")
         if filters.get("to_date"):
